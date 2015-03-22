@@ -65,3 +65,12 @@
   bottom: 100%;
   border-right: 1px solid #DDD;
 }
+
+.grid-point {
+  width: 4px;
+  height: 4px;
+  margin-top: -2px;
+  position: absolute;
+  background: #333;
+  border-radius: 50%;
+}
