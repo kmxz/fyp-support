@@ -1,5 +1,6 @@
 import RPi.GPIO as GPIO                                 # Import GPIO library
 import time                                             # Import time library
+import threading                                        # Import threading library
 
 class Ultrasonic(threading.Thread):
 
@@ -38,5 +39,5 @@ class Ultrasonic(threading.Thread):
             distance = round(distance, 2)                # Round to two decimal points
 
             self.lock.acquire()
-            self.buf.append({'date': pulse_end, 'distance':distance})
+            self.buf.append({'time': pulse_end, 'distance':distance})
             self.lock.release()
