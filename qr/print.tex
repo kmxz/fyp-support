@@ -1,0 +1,19 @@
+\documentclass{article}
+\usepackage{fullpage}
+\usepackage{graphicx}
+\pagenumbering{gobble}
+\newcommand{\img}[2]{
+  \includegraphics[width=1.0\textwidth]{#1}
+  \begin{center}
+   {\LARGE\tt #2}
+  \end{center}
+  \pagebreak 
+}
+\begin{document}
+  \img{001.png}{LOC\_001-8f}
+  \img{002.png}{LOC\_002-01}
+  \img{003.png}{LOC\_003-1a}
+  \img{004.png}{LOC\_004-37}
+  \img{005.png}{LOC\_005-cf}
+  \img{006.png}{LOC\_006-e0}
+\end{document}

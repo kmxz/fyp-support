@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://bootswatch.com/united/bootstrap.min.css" />
+    <link rel="stylesheet" href="style.css" />
+    <script type="text/javascript">
+      // Let us open a web socket
+      var ws = new WebSocket('ws://' + window.location.hostname + ':10010/');
+      ws.onmessage = function (evt)  { 
+          var msg = evt.data;
+          console.log(msg);
+      };
+      ws.onclose = function() { 
+          alert('WebSockets connection is closed.'); 
+      };
+    </script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="page-header">
+        <h1>Pi sensors console <small>For FYP 2015</small></h1>
+      </div>
+      <div class="alert alert-info" role="alert">Last heartbeat from Pi: 5 seconds ago (14:25:35)</div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title">Ultrasonic 1</h3>
+            </div>
+            <div class="panel-body">
+              <p class="us-last"><span>? cm</span><br /><small>? seconds ago</small></p>
+              <div class="grid">
+                <div class="vgrid">
+                  <div>∞ cm</div>
+                  <div>300</div>
+                  <div>200</div>
+                  <div>100</div>
+                  <div></div>
+                </div>
+                <div class="hgrid clearfix">
+                  <div>d/t</div>
+                  <div>15</div>
+                  <div>10</div>
+                  <div>5</div>
+                  <div>0 s</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title">Ultrasonic 2</h3>
+            </div>
+            <div class="panel-body">
+              <p class="us-last"><span>? cm</span><br /><small>? seconds ago</small></p>
+              <div class="grid">
+                <div class="vgrid">
+                  <div>∞ cm</div>
+                  <div>300</div>
+                  <div>200</div>
+                  <div>100</div>
+                  <div></div>
+                </div>
+                <div class="hgrid clearfix">
+                  <div>d/t</div>
+                  <div>15</div>
+                  <div>10</div>
+                  <div>5</div>
+                  <div>0 s</div>
+                </div>
+              </div>
+            </div> 
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title">Ultrasonic 3</h3>
+            </div>
+            <div class="panel-body">
+              <p class="us-last"><span>? cm</span><br /><small>? seconds ago</small></p>
+              <div class="grid">
+                <div class="vgrid">
+                  <div>∞ cm</div>
+                  <div>300</div>
+                  <div>200</div>
+                  <div>100</div>
+                  <div></div>
+                </div>
+                <div class="hgrid clearfix">
+                  <div>d/t</div>
+                  <div>15</div>
+                  <div>10</div>
+                  <div>5</div>
+                  <div>0 s</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title">QR code</h3>
+            </div>
+            <table class="table">
+              <tr>
+                <td>13:54:34 (5 seconds ago)</td><td>LOC_01-c4</td>
+              </tr>
+            </table>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
