@@ -9,7 +9,8 @@ window.onload = function () {
     return ago + ' s ago (' + date.toLocaleTimeString() + ')';
   };
 
-  var heartBeatSpan = document.querySelector('.alert-info span');
+  var heartBeatSpan = document.getElementById('heartbeat');
+  var ipSpan = document.getElementById('ip');
   var lastHeartBeat = null;
 
   var sonicGrids = Array.prototype.slice.call(document.getElementsByClassName('grid-points'));
@@ -22,12 +23,16 @@ window.onload = function () {
   var qrTbody = document.querySelector('tbody');
   var qrCodes = [];
 
+  var text = function (el, content) {
+    el.replaceChild(document.createTextNode(content), el.firstChild);
+  };
+
   // let us open a web socket
   var ws = new WebSocket('ws://' + REMOTE_HOST + ':10010/');
   ws.onmessage = function (evt) {
-    console.log(evt.data);
     var msg = JSON.parse(evt.data);
     lastHeartBeat = msg.time;
+    text(ipSpan, msg.ip);
     msg.ultrasonic.forEach(function (sonic, index) {
       Array.prototype.push.apply(sonicPoints[index], sonic.map(function (point) {
         var element = document.createElement('div');
@@ -61,10 +66,6 @@ window.onload = function () {
   };
   ws.onclose = function () {
     alert('WebSockets connection is closed.');
-  };
-
-  var text = function (el, content) {
-    el.replaceChild(document.createTextNode(content), el.firstChild);
   };
 
   var refresh = function () {

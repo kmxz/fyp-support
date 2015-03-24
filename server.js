@@ -24,8 +24,10 @@ http.createServer(function(request, response) {
     str += data;
   });
   request.on('end', function () {
+    var jsonObj = JSON.parse(str);
+    jsonObj.ip = request.connection.remoteAddress;
     wss.clients.forEach(function (client) {
-      client.send(str);
+      client.send(JSON.stringify(jsonObj));
     });
     console.log('A message ' + str.replace(/\s+/g, ' ') + ' forwarded to ' + wss.clients.length + ' clients!');
     response.end();
