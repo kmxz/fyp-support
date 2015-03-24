@@ -27,7 +27,7 @@ http.createServer(function(request, response) {
     wss.clients.forEach(function (client) {
       client.send(str);
     });
-    console.log('A message forward to ' + wss.clients.length + ' clients!');
+    console.log('A message ' + str.replace(/\s+/g, ' ') + ' forwarded to ' + wss.clients.length + ' clients!');
     response.end();
   });
 }).listen(10020);
