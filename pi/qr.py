@@ -3,6 +3,7 @@ import threading
 import time
 import uuid
 import zbar
+import os
 
 class Camera(threading.Thread):
 
@@ -21,6 +22,8 @@ class Camera(threading.Thread):
             subprocess.call(['raspistill -n -t 1 -w 256 -h 256 -o ' + fn],shell=True)
 
             self.lock.acquire()
+            if self.fn is not None:
+                os.remove(fn)
             self.fn = fn
             self.lock.release()
 
@@ -36,21 +39,21 @@ class QR(threading.Thread):
 
     def run(self):
 
-        last_fn = None
-
         while True:
 
             self.camera.lock.acquire()
             fn = self.camera.fn
+            self.camera.fn = None
             self.camera.lock.release()
 
-            if fn == last_fn:
+            if fn is None:
                 time.sleep(0.5)
                 continue
-            last_fn = fn
 
             process = subprocess.Popen(['zbarimg -D ' + fn], stdout=subprocess.PIPE, shell=True)
             (out, err) = process.communicate()
+
+            os.remove(fn)
 
             outlines = out.splitlines()
 
@@ -59,3 +62,4 @@ class QR(threading.Thread):
                 if line.startswith('QR-Code:'):
                     self.buf.append({'time': time.time(), 'content': out[8:]})
             self.lock.release()
+
