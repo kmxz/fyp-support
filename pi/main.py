@@ -1,6 +1,6 @@
-import communication.Communication as Communication
-import ultrasonic.Ultrasonic as Ultrasonic
-import qr.QR as QR
+from communication import Communication
+from ultrasonic import Ultrasonic
+from qr import QR
 
 # pin connections
 #         [ 1][ 2]$-VCC
