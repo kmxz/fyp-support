@@ -50,7 +50,7 @@ class QR(threading.Thread):
                 time.sleep(0.5)
                 continue
 
-            process = subprocess.Popen(['zbarimg -D ' + fn], stdout=subprocess.PIPE, shell=True)
+            process = subprocess.Popen(['zbarimg -D ' + fn], stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
             (out, err) = process.communicate()
 
             os.remove(fn)

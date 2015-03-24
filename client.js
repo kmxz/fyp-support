@@ -6,7 +6,7 @@ window.onload = function () {
     var date = new Date(timestampInSeconds * 1000);
     var now = new Date().getTime();
     var ago = Math.round(now / 1000 - timestampInSeconds);
-    return ago + ' s ago (' + date.toLocaleTimeString() + ')';
+    return date.toLocaleTimeString() + ' (' + ago + ' s ago)';
   };
 
   var heartBeatSpan = document.getElementById('heartbeat');
