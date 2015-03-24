@@ -21,5 +21,9 @@ class Communication(threading.Thread):
 
     def run(self):
         while True:
-            post_data = {'time': time.time(), 'ultrasonic': map(buffered_to_data, self.usss), 'qr': self.buffed_to_data(self.qr)}
+            last_time = time.time()
+            post_data = {'time': time.time(), 'ultrasonic': map(buffered_to_data, self.usss), 'qr': buffered_to_data(self.qr)}
             r = requests.post('http://' + REMOTE_HOST + '/', data=json.dumps(post_data))
+            usage = time.time() - last_time
+            if (usage < 0.5):
+                time.sleep(0.5 - usage)

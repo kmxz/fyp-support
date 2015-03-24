@@ -18,7 +18,8 @@ from qr import QR
 #         [25][26]
 
 # UltraSonic SensorS
-usss = [Ultrasonic(4, 17),  Ultrasonic(24, 25),  Ultrasonic(18, 23)]
+# usss = [Ultrasonic(4, 17),  Ultrasonic(24, 25),  Ultrasonic(18, 23)]
+usss = []
 
 # QR code scanner
 qr = QR()

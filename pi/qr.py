@@ -24,8 +24,6 @@ class Camera(threading.Thread):
             self.fn = fn
             self.lock.release()
 
-camera = Camera()
-
 class QR(threading.Thread):
 
     def __init__(self):
@@ -33,21 +31,23 @@ class QR(threading.Thread):
         super(QR, self).__init__()
         self.lock = threading.Lock()
         self.buf = []
-        self.last_fn = None
-        self.last_qr = None
+        self.camera = Camera()
+        self.camera.start()
 
     def run(self):
 
+        last_fn = None
+
         while True:
 
-            camera.lock.acquire()
-            fn = camera.fn
-            camera.lock.release()
+            self.camera.lock.acquire()
+            fn = self.camera.fn
+            self.camera.lock.release()
 
-            if fn == self.last_fn:
+            if fn == last_fn:
                 time.sleep(0.5)
                 continue
-            self.last_fn = fn
+            last_fn = fn
 
             process = subprocess.Popen(['zbarimg -D ' + fn], stdout=subprocess.PIPE, shell=True)
             (out, err) = process.communicate()
