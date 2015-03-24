@@ -8,6 +8,7 @@ class Camera(threading.Thread):
 
     def __init__(self):
 
+        super(Camera, self).__init__()
         self.fn = None
         self.lock = threading.Lock()
 
@@ -29,6 +30,7 @@ class QR(threading.Thread):
 
     def __init__(self):
 
+        super(QR, self).__init__()
         self.lock = threading.Lock()
         self.buf = []
         self.last_fn = None

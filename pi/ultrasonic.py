@@ -6,6 +6,8 @@ class Ultrasonic(threading.Thread):
 
     def __init__(self, trig, echo):
 
+        super(Ultrasonic, self).__init__()
+
         self.trig = trig
         self.echo = echo
         self.lock = threading.Lock()

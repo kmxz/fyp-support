@@ -8,6 +8,7 @@ REMOTE_HOST = 'dmc632.resnet.ust.hk:10020'
 class Communication(threading.Thread):
 
     def __init__(self, usss, qr):
+        super(Communication, self).__init__()
         self.usss = usss
         self.qr = qr
 
