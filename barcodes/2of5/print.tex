@@ -1,0 +1,17 @@
+\documentclass{article}
+\usepackage{graphicx}
+\usepackage[cm]{fullpage}
+\pagenumbering{gobble}
+\newcommand{\img}[2]{
+  \begin{center}
+  \includegraphics[width=#2\textwidth]{#1}\\\vspace{2em}
+  \end{center}
+}
+\begin{document}
+  \img{10.png}{0.25}
+  \vfill
+  \img{52.png}{0.55}
+  \img{14.png}{0.45}
+  \vfill
+  \img{77.png}{0.35}
+\end{document}
