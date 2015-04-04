@@ -23,7 +23,7 @@ class Camera(threading.Thread):
 
             self.lock.acquire()
             if self.fn is not None:
-                os.remove(fn)
+                os.remove(self.fn)
             self.fn = fn
             self.lock.release()
 
@@ -59,7 +59,7 @@ class QR(threading.Thread):
 
             self.lock.acquire()
             for line in outlines:
-                if line.startswith('QR-Code:'):
-                    self.buf.append({'time': time.time(), 'content': out[8:]})
+                if line.startswith('EAN-13:'):
+                    self.buf.append({'time': time.time(), 'content': out[7:]})
             self.lock.release()
 
