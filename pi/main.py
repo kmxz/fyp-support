@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from communication import Communication
 from ultrasonic import Ultrasonic
 from qr import QR
@@ -19,7 +21,6 @@ from qr import QR
 
 # UltraSonic SensorS
 usss = [Ultrasonic(4, 17),  Ultrasonic(24, 25),  Ultrasonic(18, 23)]
-# usss = []
 
 # QR code scanner
 qr = QR()
