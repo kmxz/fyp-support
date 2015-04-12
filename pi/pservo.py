@@ -1,9 +1,11 @@
+import signal
 import threading
 import time
 from RPIO import PWM
 
 # See documentation on http://pythonhosted.org/RPIO/pwm_py.html
 servo = PWM.Servo()
+signal.signal(signal.SIGCHLD, signal.SIG_IGN)
 
 class PServo(threading.Thread):
 
