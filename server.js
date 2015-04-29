@@ -12,28 +12,31 @@ http.createServer(function (request, response) {
   }).resume();
 }).listen(10000); 
 
-// port 10010: websockets - allow users to subscribe
+var currentPi, ip;
 
-var wss = new ws.Server({ port: 10010 });
+var wssb = new ws.Server({ port: 10010 });
+var wssp = new ws.Server({ port: 10030 });
 
-// port 10020: receives python uploads, and directly forward to websockets clients
+// port 10010: websockets for browsers - allow users to subscribe
 
-http.createServer(function(request, response) {
-  var str = '';
-  request.on('data', function (data) {
-    str += data;
+wssb.on('connection', function (client) {
+  ws.on('message', function (message) {
+    currentPi.send(message);
+    console.log('An instruction ' + str.replace(/\s+/g, ' ') + ' forwarded to ' + ip + '!');
   });
-  request.on('end', function () {
+});
+
+// port 10030: websockets for python on pi
+
+wssp.on('connection', function (client) {
+  var currentPi = client;
+  ip = client.upgradeReq.connection.remoteAddress;
+  client.on('message', function (message) {
     var jsonObj = JSON.parse(str);
-    jsonObj.ip = request.connection.remoteAddress;
-    wss.clients.forEach(function (client) {
+    jsonObj.ip = ip;
+    wssb.clients.forEach(function (client) {
       client.send(JSON.stringify(jsonObj));
     });
     console.log('A message ' + str.replace(/\s+/g, ' ') + ' forwarded to ' + wss.clients.length + ' clients!');
-    response.end();
   });
-}).listen(10020);
-
-// that's all!
-
-console.log('All three servers started!');
+});

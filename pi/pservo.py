@@ -7,19 +7,10 @@ from RPIO import PWM
 servo = PWM.Servo()
 signal.signal(signal.SIGCHLD, signal.SIG_IGN)
 
-class PServo(threading.Thread):
+class PServo:
 
     def __init__(self, gpio):
-        super(PServo, self).__init__()
         self.gpio = gpio
 
-    def run(self):
-        while True:
-            servo.set_servo(self.gpio, 400)
-            time.sleep(0.75)
-            servo.set_servo(self.gpio, 800)
-            time.sleep(0.75)
-            servo.set_servo(self.gpio, 1200)
-            time.sleep(0.75)
-            servo.set_servo(self.gpio, 1600)
-            time.sleep(0.75)
+    def turn_to(self, target):
+        servo.set_servo(self.gpio, target * 2000)
