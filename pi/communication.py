@@ -37,7 +37,9 @@ class WsReceiver(threading.Thread):
         self.ws_sender.start()
 
     def run(self):
-        self.ws.run_forever()
+        while True: # loop to make sure the websocket reconnects once broken
+            self.ws.run_forever()
+            time.sleep(0.1) # 100 ms delay between retries
 
 class WsSender(threading.Thread):
 

@@ -21,8 +21,12 @@ var wssp = new ws.Server({ port: 10030 });
 
 wssb.on('connection', function (client) {
   client.on('message', function (message) {
-    currentPi.send(message);
-    console.log('An instruction ' + message.replace(/\s+/g, ' ') + ' forwarded to ' + ip + '!');
+    try {
+      currentPi.send(message);
+      console.log('An instruction ' + message.replace(/\s+/g, ' ') + ' forwarded to ' + ip + '!');
+    } catch (e) {
+      console.error(e);
+    }
   });
 });
 
@@ -34,9 +38,13 @@ wssp.on('connection', function (pi) {
   pi.on('message', function (message) {
     var jsonObj = JSON.parse(message);
     jsonObj.ip = ip;
-    wssb.clients.forEach(function (client) {
-      client.send(JSON.stringify(jsonObj));
-    });
-    console.log('A message ' + message.replace(/\s+/g, ' ') + ' forwarded to ' + wssb.clients.length + ' clients!');
+    try {
+      wssb.clients.forEach(function (client) {
+        client.send(JSON.stringify(jsonObj));
+      });
+      console.log('A message ' + message.replace(/\s+/g, ' ') + ' forwarded to ' + wssb.clients.length + ' clients!');
+    } catch (e) {
+      console.error(e);
+    }
   });
 });
