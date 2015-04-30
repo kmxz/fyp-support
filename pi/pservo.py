@@ -1,6 +1,4 @@
 import signal
-import threading
-import time
 from RPIO import PWM
 
 # See documentation on http://pythonhosted.org/RPIO/pwm_py.html
@@ -13,5 +11,5 @@ class PServo:
         self.gpio = gpio
 
     def turn_to(self, target):
-	print 'Set to ', target
+        print 'Set to ', target
         servo.set_servo(self.gpio, target * 2000)

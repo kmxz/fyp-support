@@ -13,10 +13,8 @@ class Ultrasonic(threading.Thread):
         self.lock = threading.Lock()
         self.buf = []
 
-        GPIO.setmode(GPIO.BCM) # set GPIO pin numbering
-
-        GPIO.setup(trig,GPIO.OUT)
-        GPIO.setup(echo,GPIO.IN)
+        GPIO.setup(trig, GPIO.OUT)
+        GPIO.setup(echo, GPIO.IN)
 
     def run(self):
 

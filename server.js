@@ -28,10 +28,10 @@ wssb.on('connection', function (client) {
 
 // port 10030: websockets for python on pi
 
-wssp.on('connection', function (client) {
-  currentPi = client;
-  ip = client.upgradeReq.connection.remoteAddress;
-  client.on('message', function (message) {
+wssp.on('connection', function (pi) {
+  currentPi = pi;
+  ip = pi.upgradeReq.connection.remoteAddress;
+  pi.on('message', function (message) {
     var jsonObj = JSON.parse(message);
     jsonObj.ip = ip;
     wssb.clients.forEach(function (client) {

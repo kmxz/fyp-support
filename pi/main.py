@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 
-from communication import Communication
+from communication import WsReceiver
 from ultrasonic import Ultrasonic
 from qr import QR
+import RPi.GPIO as GPIO
 from pservo import PServo
+from switch import Switch
 
 # pin connections (refer to http://goo.gl/a9SVCb please)
 # 1-, 2-, 3- stands for sensors
@@ -30,9 +32,11 @@ from pservo import PServo
 #  M-SIG-$[37][38]
 #  M-GND-$[39][40]
 
+GPIO.setmode(GPIO.BCM) # set GPIO pin numbering
+
 # UltraSonic Sensors
 #usss = [Ultrasonic(4, 17),  Ultrasonic(24, 25),  Ultrasonic(18, 23)]
-usss = [Ultrasonic(4, 17),  Ultrasonic(24, 25),  Ultrasonic(18, 23)]
+usss = []
 
 # QR code scanner
 qr = QR()
@@ -40,8 +44,11 @@ qr = QR()
 # PWM Servo testing
 pservo = PServo(22)
 
+# Switch for DC motor
+switch = Switch(26)
+
 # Communication service
-comm = Communication(usss, qr, pservo)
+comm = WsReceiver(usss, qr, pservo, switch)
 
 # Start all threads
 

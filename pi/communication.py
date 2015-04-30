@@ -12,31 +12,45 @@ def buffered_to_data(thread):
     thread.lock.release()
     return out
 
-class Communication(threading.Thread):
+class WsReceiver(threading.Thread):
 
-    def __init__(self, usss, qr, pservo):
-        super(Communication, self).__init__()
-        self.usss = usss
-        self.qr = qr
-        self.pservo = pservo
+    def __init__(self, usss, qr, pservo, switch):
+        super(WsReceiver, self).__init__()
         self.ws = websocket.WebSocketApp(REMOTE,
             on_message = self.on_message
         )
+        self.ws_sender = WsSender(self, usss, qr)
+        self.pservo = pservo
+        self.switch = switch
         self.ws.on_open = self.on_open
 
     def on_message(self, ws, message):
-        print "FUCK ME!"
-        self.pservo.turn_to(float(message))
+        loaded = json.load(message)
+        if (loaded['type'] == 'servo'):
+            self.pservo.turn_to(loaded['value'])
+        elif (loaded['type'] == 'switch'):
+            self.switch.set_to(loaded['value'])
 
-    def on_open(self, ws):
-        while True:
-            last_time = time.time()
-            post_data = {'time': time.time(), 'ultrasonic': map(buffered_to_data, self.usss), 'qr': buffered_to_data(self.qr)}
-            ws.send(json.dumps(post_data))
-            usage = time.time() - last_time
-            if (usage < 0.5):
-                time.sleep(0.5 - usage)
+    def on_open(self):
+        WsSender.start()
 
     def run(self):
         self.ws.run_forever()
+
+class WsSender(threading.Thread):
+
+    def __init__(self, ws_receiver, usss, qr):
+        super(WsSender, self).__init__()
+        self.ws_receiver = ws_receiver
+        self.usss = usss
+        self.qr = qr
+
+    def run(self):
+        while True:
+            last_time = time.time()
+            post_data = {'time': time.time(), 'ultrasonic': map(buffered_to_data, self.usss), 'qr': buffered_to_data(self.qr)}
+            self.ws_receiver.ws.send(json.dumps(post_data))
+            usage = time.time() - last_time
+            if (usage < 0.5):
+                time.sleep(0.5 - usage)
 
