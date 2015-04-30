@@ -25,14 +25,16 @@ class WsReceiver(threading.Thread):
         self.ws.on_open = self.on_open
 
     def on_message(self, ws, message):
-        loaded = json.load(message)
-        if (loaded['type'] == 'servo'):
-            self.pservo.turn_to(loaded['value'])
-        elif (loaded['type'] == 'switch'):
-            self.switch.set_to(loaded['value'])
+        print "Get message ", message
+        loaded = json.loads(message)
+        if (loaded[u'type'] == u'servo'):
+            self.pservo.turn_to(loaded[u'value'])
+        elif (loaded[u'type'] == u'switch'):
+            print "NAIVE!"
+            self.switch.set_to(loaded[u'value'])
 
     def on_open(self):
-        WsSender.start()
+        self.ws_sender.start()
 
     def run(self):
         self.ws.run_forever()
