@@ -20,11 +20,12 @@ class Communication(threading.Thread):
         self.qr = qr
         self.pservo = pservo
         self.ws = websocket.WebSocketApp(REMOTE,
-            on_message = on_message
+            on_message = self.on_message
         )
         self.ws.on_open = self.on_open
 
     def on_message(self, ws, message):
+        print "FUCK ME!"
         self.pservo.turn_to(float(message))
 
     def on_open(self, ws):
