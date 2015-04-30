@@ -21,6 +21,7 @@ from pservo import PServo
 #         [25][26]
 
 # UltraSonic Sensors
+#usss = [Ultrasonic(4, 17),  Ultrasonic(24, 25),  Ultrasonic(18, 23)]
 usss = [Ultrasonic(4, 17),  Ultrasonic(24, 25),  Ultrasonic(18, 23)]
 
 # QR code scanner
@@ -30,7 +31,7 @@ qr = QR()
 pservo = PServo(22)
 
 # Communication service
-comm = Communication(usss, qr)
+comm = Communication(usss, qr, pservo)
 
 # Start all threads
 
