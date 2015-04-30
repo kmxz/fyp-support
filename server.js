@@ -20,23 +20,23 @@ var wssp = new ws.Server({ port: 10030 });
 // port 10010: websockets for browsers - allow users to subscribe
 
 wssb.on('connection', function (client) {
-  ws.on('message', function (message) {
+  client.on('message', function (message) {
     currentPi.send(message);
-    console.log('An instruction ' + str.replace(/\s+/g, ' ') + ' forwarded to ' + ip + '!');
+    console.log('An instruction ' + message.replace(/\s+/g, ' ') + ' forwarded to ' + ip + '!');
   });
 });
 
 // port 10030: websockets for python on pi
 
 wssp.on('connection', function (client) {
-  var currentPi = client;
+  currentPi = client;
   ip = client.upgradeReq.connection.remoteAddress;
   client.on('message', function (message) {
-    var jsonObj = JSON.parse(str);
+    var jsonObj = JSON.parse(message);
     jsonObj.ip = ip;
     wssb.clients.forEach(function (client) {
       client.send(JSON.stringify(jsonObj));
     });
-    console.log('A message ' + str.replace(/\s+/g, ' ') + ' forwarded to ' + wss.clients.length + ' clients!');
+    console.log('A message ' + message.replace(/\s+/g, ' ') + ' forwarded to ' + wssb.clients.length + ' clients!');
   });
 });

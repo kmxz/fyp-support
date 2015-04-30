@@ -6,6 +6,9 @@ from qr import QR
 from pservo import PServo
 
 # pin connections (refer to http://goo.gl/a9SVCb please)
+# 1-, 2-, 3- stands for sensors
+# S- stands for servo
+# M- stands for motor switch
 #         [ 1][ 2]$-VCC(Sensors)
 #         [ 3][ 4]$-S-5V
 #         [ 5][ 6]$-S-GND
@@ -19,6 +22,13 @@ from pservo import PServo
 #         [21][22]$-2-ECHO
 #         [23][24]
 #         [25][26]
+#         [27][28]
+#         [29][30]
+#         [31][32]
+#         [33][34]
+#         [35][36]
+#  M-SIG-$[37][38]
+#  M-GND-$[39][40]
 
 # UltraSonic Sensors
 usss = [Ultrasonic(4, 17),  Ultrasonic(24, 25),  Ultrasonic(18, 23)]

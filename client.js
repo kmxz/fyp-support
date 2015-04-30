@@ -115,26 +115,8 @@ window.onload = function () {
 
   window.requestAnimationFrame(refresh);
 
-  window.test = (function () {
-    var qr = [];
-    var us = [[],[],[]];
-    var getTime = function () { return new Date().getTime() / 1000; }
-    return {
-      us: function (num, dist) {
-        us[num - 1].push({ time: getTime(), distance: dist });
-      },
-      qr: function (cont) {
-        qr.push({ time: getTime(), content: cont });
-      },
-      send: function () {
-        var data = { time: getTime(), ultrasonic: us, qr: qr };
-        qr = [];
-        us = us.map(function () { return []; });
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', 'http://' + REMOTE_HOST + ':10020/');
-        xhr.send(JSON.stringify(data));
-      }
-    };
-  }());
+  window.servo = function (range) {
+    ws.send(range);
+  };
 
 };
