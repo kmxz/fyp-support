@@ -115,8 +115,20 @@ window.onload = function () {
 
   window.requestAnimationFrame(refresh);
 
-  window.servo = function (range) {
-    ws.send(range);
+  var send = function (type, value) {
+    ws.send(JSON.stringify({
+      'type': type,
+      'value': value
+    }));
   };
+
+  var sr = document.getElementById('servo-range');
+  var mc = document.getElementById('motor-checkbox');
+  sr.addEventListener('change', function () {
+    send('servo', parseFloat(sr.value));
+  });
+  mc.addEventListener('click', function () {
+    send('switch', mc.checked);
+  });
 
 };

@@ -4,7 +4,7 @@ var ws = require('ws');
 
 // port 10000: static file - serving static files in this directory
 
-var fileServer = new nodeStatic.Server(__dirname);
+var fileServer = new nodeStatic.Server(__dirname, { cache: 0 });
 
 http.createServer(function (request, response) {
   request.addListener('end', function () {
