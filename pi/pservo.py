@@ -11,5 +11,4 @@ class PServo:
         self.gpio = gpio
 
     def turn_to(self, target):
-        print 'Set to ', target
         servo.set_servo(self.gpio, target * 2000)

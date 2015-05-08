@@ -7,5 +7,4 @@ class Switch:
         GPIO.setup(gpio, GPIO.OUT)
 
     def set_to(self, target):
-        print 'Set to ', target
         GPIO.output(self.gpio, target)

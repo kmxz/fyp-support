@@ -4,11 +4,11 @@
 \pagenumbering{gobble}
 \newcommand{\img}[2]{
   \begin{center}
-  \includegraphics[width=#2\textwidth]{#1}\\\vspace{2em}
+  \includegraphics[width=#2\textwidth,angle=180,origin=c]{#1}
   \end{center}
 }
 \begin{document}
+  This page is intended to be used as back side.
   \img{1024.png}{0.35}
-  \vfill
   \img{5210.png}{0.5}
 \end{document}
