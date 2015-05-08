@@ -30,13 +30,13 @@ class WsReceiver(threading.Thread):
         if (loaded[u'type'] == u'servo'):
             self.pservo.turn_to(loaded[u'value'])
         elif (loaded[u'type'] == u'switch'):
-            print "NAIVE!"
             self.switch.set_to(loaded[u'value'])
 
     def on_open(self):
-        self.ws_sender.start()
+        pass
 
     def run(self):
+        self.ws_sender.start()
         while True: # loop to make sure the websocket reconnects once broken
             self.ws.run_forever()
             time.sleep(0.1) # 100 ms delay between retries
@@ -52,9 +52,12 @@ class WsSender(threading.Thread):
     def run(self):
         while True:
             last_time = time.time()
-            post_data = {'time': time.time(), 'ultrasonic': map(buffered_to_data, self.usss), 'qr': buffered_to_data(self.qr)}
-            self.ws_receiver.ws.send(json.dumps(post_data))
+            try:
+                post_data = {'time': time.time(), 'ultrasonic': map(buffered_to_data, self.usss), 'qr': buffered_to_data(self.qr)}
+                self.ws_receiver.ws.send(json.dumps(post_data))
+                print "Sending a message..."
+            except:
+                pass
             usage = time.time() - last_time
             if (usage < 0.5):
                 time.sleep(0.5 - usage)
-
