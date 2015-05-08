@@ -38,14 +38,14 @@ GPIO.setmode(GPIO.BCM) # set GPIO pin numbering
 #usss = [Ultrasonic(4, 17),  Ultrasonic(24, 25),  Ultrasonic(18, 23)]
 usss = []
 
-# QR code scanner
-qr = QR()
-
 # PWM Servo testing
 pservo = PServo(22)
 
 # Switch for DC motor
 switch = Switch(26)
+
+# QR code scanne
+qr = QR(switch)
 
 # Communication service
 comm = WsReceiver(usss, qr, pservo, switch)

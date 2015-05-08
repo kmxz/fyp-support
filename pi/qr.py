@@ -4,6 +4,7 @@ import time
 import uuid
 import zbar
 import os
+import switch
 
 class Camera(threading.Thread):
 
@@ -29,13 +30,18 @@ class Camera(threading.Thread):
 
 class QR(threading.Thread):
 
-    def __init__(self):
+    def __init__(self, switch):
 
         super(QR, self).__init__()
         self.lock = threading.Lock()
         self.buf = []
+        self.switch = switch
         self.camera = Camera()
         self.camera.start()
+
+    def on_barcode(self, content):
+
+        self.switch.set_to(False)
 
     def run(self):
 
@@ -60,6 +66,7 @@ class QR(threading.Thread):
             self.lock.acquire()
             for line in outlines:
                 if line.startswith('EAN-13:'):
-                    self.buf.append({'time': time.time(), 'content': out[7:]})
+                    self.buf.append({'time': time.time(), 'content': line[7:]})
+                    self.on_barcode(line[7:])
             self.lock.release()
 
