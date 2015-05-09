@@ -2,15 +2,15 @@ import subprocess
 import threading
 import time
 import uuid
-import zbar
 import os
-import switch
+import urllib
 
 class Camera(threading.Thread):
 
     def __init__(self):
 
         super(Camera, self).__init__()
+        self.buf = []
         self.fn = None
         self.lock = threading.Lock()
 
@@ -20,12 +20,12 @@ class Camera(threading.Thread):
 
             fn = str(uuid.uuid4()) + '.png'
 
-            subprocess.call(['raspistill -n -t 1 -w 256 -h 256 -o ' + fn],shell=True)
+            subprocess.call(['raspistill -n -t 1 -w 256 -h 256 -o ' + fn],shell=True,cwd='/tmp')
 
             self.lock.acquire()
-            if self.fn is not None:
-                os.remove(self.fn)
             self.fn = fn
+            encoded = urllib.quote(open('/tmp/' + fn, 'rb').read().encode('base64'))
+            self.buf.append('data:image/png;base64,' + encoded)
             self.lock.release()
 
 class QR(threading.Thread):
@@ -56,10 +56,8 @@ class QR(threading.Thread):
                 time.sleep(0.5)
                 continue
 
-            process = subprocess.Popen(['zbarimg -D ' + fn], stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+            process = subprocess.Popen(['zbarimg -D ' + fn], stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, cwd='/tmp')
             (out, err) = process.communicate()
-
-            os.remove(fn)
 
             outlines = out.splitlines()
 

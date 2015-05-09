@@ -53,7 +53,7 @@ class WsSender(threading.Thread):
     def run(self):
         while True:
             last_time = time.time()
-            post_data = {'time': time.time(), 'ultrasonic': map(buffered_to_data, self.usss), 'qr': buffered_to_data(self.qr)}
+            post_data = {'time': time.time(), 'ultrasonic': map(buffered_to_data, self.usss), 'qr': buffered_to_data(self.qr), 'image': buffered_to_data(self.qr.camera)}
             self.ws_receiver.ws.send(json.dumps(post_data))
             usage = time.time() - last_time
             if (usage < 0.5):
