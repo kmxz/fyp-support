@@ -16,6 +16,7 @@ def buffered_to_data(thread):
 class CameraComm(threading.Thread):
 
     def __init__(self):
+        super(CameraComm, self).__init__()
         self.ws = websocket.WebSocketApp(REMOTE_IMG)
 
     def run(self):

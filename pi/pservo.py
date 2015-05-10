@@ -27,7 +27,7 @@ class Turning:
 
     def turn_to(self, target):
         self.lock.acquire()
-        self.status = self.target
+        self.status = target
         servo.set_servo(self.gpio, round(self.transform(target) * 2000))
         self.lock.release()
 
