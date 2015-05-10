@@ -82,3 +82,16 @@
   background: #333;
   border-radius: 50%;
 }
+
+#pictures {
+  height: 128px;
+  text-align: center;
+}
+
+#pictures img {
+  height: 128px;
+}
+
+.lastpicture {
+  border-color: #F00;
+}

@@ -22,9 +22,27 @@ window.onload = function () {
 
   var qrTbody = document.querySelector('tbody');
   var qrCodes = [];
+  var pictureEl = document.getElementById('pictures');
+  var lastPictures = [];
+  var pictureElSlots = [];
 
   var text = function (el, content) {
     el.replaceChild(document.createTextNode(content), el.firstChild);
+  };
+
+  var prepend = function (el, child) {
+    el.insertBefore(child, el.firstChild);
+  };
+
+  var updatePic = function (base64) {
+    var imgEl = document.createElement('img');
+    imgEl.src = base64;
+    pictureElSlots.forEach(function (slot) {
+      slot.classList.remove('lastpicture');
+    });
+    imgEl.classList.add('lastpicture');
+    pictureElSlots.push(imgEl);
+    pictureEl.appendChild(imgEl);
   };
 
   // let us open a web socket
@@ -57,7 +75,7 @@ window.onload = function () {
       var content = document.createTextNode(code.content);
       contentTd.appendChild(content);
       tr.appendChild(contentTd);
-      qrTbody.appendChild(tr);
+      prepend(qrTbody, tr);
       return {
         time: code.time,
         timeTd: timeTd
@@ -108,9 +126,7 @@ window.onload = function () {
     qrCodes.forEach(function (qr) {
       text(qr.timeTd, toFriendlyTime(qr.time));
     });
-    if (!window.s) {
-      window.requestAnimationFrame(refresh);
-    }
+    window.requestAnimationFrame(refresh);
   };
 
   window.requestAnimationFrame(refresh);

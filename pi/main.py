@@ -15,11 +15,11 @@ from switch import Switch
 #          [ 1][ 2]$-VCC(Sensors)
 #          [ 3][ 4]$-S-5V
 #          [ 5][ 6]$-S-GND
-#  1-TRIG-$[ 7][ 8]
+#  1-TRIG-$[ 7][ 8]$-S-PWM
 #   1-GND-$[ 9][10]
 #  1-ECHO-$[11][12]$-3-TRIG
 #          [13][14]$-3-GND
-#   S-PWM-$[15][16]$-3-ECHO
+#          [15][16]$-3-ECHO
 #          [17][18]$-2-TRIG
 #          [19][20]$-2-GND
 #          [21][22]$-2-ECHO
@@ -39,8 +39,8 @@ GPIO.setmode(GPIO.BCM) # set GPIO pin numbering
 #usss = [Ultrasonic(4, 17),  Ultrasonic(24, 25),  Ultrasonic(18, 23)]
 usss = []
 
-# PWM Servo testing
-pservo = PServo(22)
+# PWM Servo
+pservo = PServo(14)
 
 # Switch for DC motor
 switch = Switch(26)
