@@ -28,7 +28,7 @@ class Camera(threading.Thread):
             self.lock.release()
 
             try:
-                self.comm.ws.send(open('/tmp/' + fn, 'rb').read())
+                self.comm.ws.send(open('/tmp/' + fn, 'rb').read().encode("base64"))
             except:
                 pass
 
