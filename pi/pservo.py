@@ -30,6 +30,16 @@ class Turning:
         self.status = target
         servo.set_servo(self.gpio, int(round(self.transform(target) * 2000)))
 
+    def slow_turn_to(self, target):
+        if self.status > target:
+            while self.status > target:
+                self.turn_to(self.status - 0.02)
+                sleep(0.04)
+        else:
+            while self.status < target:
+                self.turn_to(self.status + 0.02)
+                sleep(0.04)
+
     def add_task(self, task):
         print "[Turning task]", task
         self.queue.put(task)

@@ -59,7 +59,7 @@ wsbsp.on('connection', function (pi) {
       wsbsb.clients.forEach(function (client) {
         client.send(message);
       });
-      console.log('A binary ' + message.replace(/\s+/g, ' ') + ' forwarded to ' + wsbsb.clients.length + ' clients!');
+      console.log('A binary forwarded to ' + wsbsb.clients.length + ' clients!');
     } catch (e) {
       console.error(e);
     }

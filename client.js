@@ -36,18 +36,34 @@ window.onload = function () {
   var initPictureSlots = function () {
       var pictureEl = document.getElementById('pictures');
       var width = pictureEl.offsetWidth;
-      // TODO
+      var numOfImg = Math.floor(width / 200);
+      if (numOfImg === pictureElSlots.length) {
+        return;
+      }
+      pictureEl.innerHTML = '';
+      pictureElSlots = [];
+      var img;
+      var rand = Math.floor(Math.random() * 8);
+      while(numOfImg--) {
+        img = document.createElement('img');
+        img.src = 'ng/' + ((numOfImg + rand) % 8) + '.png';
+        pictureEl.appendChild(img);
+        pictureElSlots.push(img);
+      }
   };
+  initPictureSlots();
+
+  window.addEventListener('resize', initPictureSlots);
 
   var updatePic = function (base64) {
-    var imgEl = document.createElement('img');
-    imgEl.src = base64;
+    currentPictureIndex++;
+    currentPictureIndex = currentPictureIndex % pictureElSlots.length;
+    var imgEl = pictureElSlots[currentPictureIndex];
     pictureElSlots.forEach(function (slot) {
       slot.classList.remove('lastpicture');
     });
+    imgEl.src = 'data:image/png;base64,' + base64;
     imgEl.classList.add('lastpicture');
-    pictureElSlots.push(imgEl);
-    pictureEl.appendChild(imgEl);
   };
 
   // let us open a web socket
@@ -92,7 +108,9 @@ window.onload = function () {
   };
 
   var wsb = new WebSocket('ws://' + REMOTE_HOST + ':10060/');
-  // TODO
+  wsb.onmessage = function (evt) {
+    updatePic(evt.data);
+  };
 
   var refresh = function () {
     var time = new Date().getTime() / 1000;
@@ -148,6 +166,10 @@ window.onload = function () {
 
   window.turn = function (fl) {
    send('turning', fl);
+  };
+
+  window.servo = function (fl) {
+   send('servo', fl);
   };
 
   var sr = document.getElementById('servo-range');
