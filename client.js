@@ -22,9 +22,8 @@ window.onload = function () {
 
   var qrTbody = document.querySelector('tbody');
   var qrCodes = [];
-  var pictureEl = document.getElementById('pictures');
-  var lastPictures = [];
   var pictureElSlots = [];
+  var currentPictureIndex = -1;
 
   var text = function (el, content) {
     el.replaceChild(document.createTextNode(content), el.firstChild);
@@ -32,6 +31,12 @@ window.onload = function () {
 
   var prepend = function (el, child) {
     el.insertBefore(child, el.firstChild);
+  };
+
+  var initPictureSlots = function () {
+      var pictureEl = document.getElementById('pictures');
+      var width = pictureEl.offsetWidth;
+      // TODO
   };
 
   var updatePic = function (base64) {
@@ -48,7 +53,7 @@ window.onload = function () {
   // let us open a web socket
   var ws = new WebSocket('ws://' + REMOTE_HOST + ':10010/');
   ws.onmessage = function (evt) {
-    var msg = JSON.parse(evt.data);
+    var msg = JSON.parse(evt.data);border-color: #F00;
     lastHeartBeat = msg.time;
     text(ipSpan, msg.ip);
     msg.ultrasonic.forEach(function (sonic, index) {
@@ -136,6 +141,10 @@ window.onload = function () {
       'type': type,
       'value': value
     }));
+  };
+
+  window.servo = function (fl) {
+   send('servo', fl);
   };
 
   var sr = document.getElementById('servo-range');

@@ -90,8 +90,9 @@
 
 #pictures img {
   height: 128px;
+  border-right: 5px solid #333;
 }
 
 .lastpicture {
-  border-color: #F00;
+  border-color: #F33;
 }
