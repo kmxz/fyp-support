@@ -3,7 +3,7 @@ import threading
 import time
 import uuid
 import os
-from communication import start_img_ws
+from communication import CameraComm
 
 class Camera(threading.Thread):
 
@@ -12,10 +12,12 @@ class Camera(threading.Thread):
         super(Camera, self).__init__()
         self.sender = None
         self.fn = None
-        self.ws = start_img_ws()
+        self.comm = CameraComm()
         self.lock = threading.Lock()
 
     def run(self):
+
+        self.comm.start()
 
         while True:
 
@@ -27,8 +29,8 @@ class Camera(threading.Thread):
             self.fn = fn
             self.lock.release()
 
-            if (self.ws is not None):
-                self.ws.send(open('/tmp/' + fn, 'rb').read())
+            if (self.comm is not None):
+                self.comm.ws.send(open('/tmp/' + fn, 'rb').read())
 
 class QR(threading.Thread):
 

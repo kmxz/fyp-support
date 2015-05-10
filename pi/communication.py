@@ -13,10 +13,15 @@ def buffered_to_data(thread):
     thread.lock.release()
     return out
 
-def start_img_ws():
-    ws = websocket.WebSocketApp(REMOTE_IMG)
-    ws.run_forever()
-    return ws
+class CameraComm(threading.Thread):
+
+    def __init__(self):
+        self.ws = websocket.WebSocketApp(REMOTE_IMG)
+
+    def run(self):
+        while True: # loop to make sure the websocket reconnects once broken
+            self.ws.run_forever()
+            time.sleep(0.1) # 100 ms delay between retries
 
 class WsReceiver(threading.Thread):
 
