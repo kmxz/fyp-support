@@ -14,12 +14,15 @@ class Camera(threading.Thread):
         self.fn = None
         self.comm = CameraComm()
         self.lock = threading.Lock()
+        self.time = time.time()
+        self.c = 0
 
     def run(self):
         self.comm.start()
 
         while True:
-
+            self.c = self.c + 1
+            print "[CAMERA SINCE ", self.c , "]" , (time.time() - self.time)
             fn = str(uuid.uuid4()) + '.png'
             subprocess.call(['raspistill -n -t 1 -w 256 -h 256 -o ' + fn],shell=True,cwd='/tmp')
 
@@ -27,10 +30,10 @@ class Camera(threading.Thread):
             self.fn = fn
             self.lock.release()
 
-            try:
-                self.comm.ws.send(open('/tmp/' + fn, 'rb').read().encode("base64"))
-            except:
-                pass
+            #try:
+            #    self.comm.send('/tmp/' + fn)
+            #except:
+            #    pass
 
 class QR(threading.Thread):
 
@@ -50,7 +53,7 @@ class QR(threading.Thread):
     def run(self):
 
         while True:
-
+            print "[BARCODE]"
             self.camera.lock.acquire()
             fn = self.camera.fn
             self.camera.fn = None
