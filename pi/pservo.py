@@ -8,7 +8,7 @@ from Queue import Queue
 servo = PWM.Servo()
 signal.signal(signal.SIGCHLD, signal.SIG_IGN)
 
-BIAS = 0.71
+BIAS = 0.73
 
 class Turning:
 
@@ -21,15 +21,14 @@ class Turning:
 
     def transform(self, dir): # dir from -1 to 1
         rv = dir * 0.29 + BIAS
-        print "[Servo in [0, 1] scale]", rv
-        rv = min(max(rv, 0), 1)
-        return rv
+        rrv = min(max(rv, 0), 1)
+        rrv = round(rrv / 0.005) * 0.005
+        print "[Servo in [0, 1] scale]", rv, " ", rrv
+        return rrv
 
     def turn_to(self, target):
-        self.lock.acquire()
         self.status = target
-        servo.set_servo(self.gpio, round(self.transform(target) * 2000))
-        self.lock.release()
+        servo.set_servo(self.gpio, int(round(self.transform(target) * 2000)))
 
     def add_task(self, task):
         print "[Turning task]", task
@@ -37,6 +36,7 @@ class Turning:
         self.lock.acquire()
         if self.turner is None:
             self.turner = Turner(self)
+            self.turner.start()
         self.lock.release()
 
 class Turner(threading.Thread):
@@ -57,23 +57,28 @@ class Turner(threading.Thread):
                 self.center_to_right()
             elif (status == 0) and (new_status < 0):
                 self.center_to_left()
+        self.turning.turner = None
 
     def center_to_left(self):
-        self.pservo.turn_to(-1)
-        sleep(0.2)
-        self.pservo.turn_to(-0.5)
+        self.turning.turn_to(-0.8)
+        sleep(0.3)
+        self.turning.turn_to(-0.3)
 
     def center_to_right(self):
-        self.pservo.turn_to(1)
-        sleep(0.2)
-        self.pservo.turn_to(0.5)
+        self.turning.turn_to(1)
+        sleep(0.3)
+        self.turning.turn_to(0.3)
 
     def left_to_center(self):
-        self.pservo.turn_to(0.5)
-        sleep(0.2)
-        self.pservo.turn_to(0)
+        self.turning.turn_to(-0.45)
+        sleep(0.3)
+        self.turning.turn_to(0.5)
+        sleep(0.4)
+        self.turning.turn_to(0)
 
     def right_to_center(self):
-        self.pservo.turn_to(-0.5)
-        sleep(0.2)
-        self.pservo.turn_to(0)
+        self.turning.turn_to(0.45)
+        sleep(0.3)
+        self.turning.turn_to(-0.4)
+        sleep(0.3)
+        self.turning.turn_to(0)

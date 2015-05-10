@@ -42,7 +42,7 @@ class WsReceiver(threading.Thread):
         if (loaded[u'type'] == u'turning'):
             self.turning.add_task(loaded[u'value'])
         elif (loaded[u'type'] == u'servo'):
-            self.turning.set_to(loaded[u'value'])
+            self.turning.turn_to(loaded[u'value'])
         elif (loaded[u'type'] == u'switch'):
             self.switch.set_to(loaded[u'value'])
 
