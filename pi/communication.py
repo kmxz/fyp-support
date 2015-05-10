@@ -20,21 +20,23 @@ def start_img_ws():
 
 class WsReceiver(threading.Thread):
 
-    def __init__(self, usss, qr, pservo, switch):
+    def __init__(self, usss, qr, turning, switch):
         super(WsReceiver, self).__init__()
         self.ws = websocket.WebSocketApp(REMOTE,
             on_message = self.on_message
         )
         self.ws_sender = WsSender(self, usss, qr)
-        self.pservo = pservo
+        self.turning = turning
         self.switch = switch
         self.ws.on_open = self.on_open
 
     def on_message(self, ws, message):
         print "Get message ", message
         loaded = json.loads(message)
-        if (loaded[u'type'] == u'servo'):
-            self.pservo.turn_to(loaded[u'value'])
+        if (loaded[u'type'] == u'turning'):
+            self.turning.add_task(loaded[u'value'])
+        elif (loaded[u'type'] == u'servo'):
+            self.turning.set_to(loaded[u'value'])
         elif (loaded[u'type'] == u'switch'):
             self.switch.set_to(loaded[u'value'])
 

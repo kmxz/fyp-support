@@ -14,14 +14,14 @@ http.createServer(function (request, response) {
 
 var currentPi, ip;
 
-var wssb = new ws.Server({ port: 10010 });
-var wssp = new ws.Server({ port: 10030 });
+var wsjsb = new ws.Server({ port: 10010 });
+var wsjsp = new ws.Server({ port: 10030 });
 var wsbsb = new ws.Server({ port: 10060 });
 var wsbsp = new ws.Server({ port: 10070 });
 
-// port 10010: websockets for browsers - allow users to subscribe
+// port 10010: websockets for browsers, json
 
-wssb.on('connection', function (client) {
+wsjsb.on('connection', function (client) {
   client.on('message', function (message) {
     try {
       currentPi.send(message);
@@ -32,19 +32,34 @@ wssb.on('connection', function (client) {
   });
 });
 
-// port 10030: websockets for python on pi
+// port 10030: websockets for python on pi, json
 
-wssp.on('connection', function (pi) {
+wsjsp.on('connection', function (pi) {
   currentPi = pi;
   ip = pi.upgradeReq.connection.remoteAddress;
   pi.on('message', function (message) {
     var jsonObj = JSON.parse(message);
     jsonObj.ip = ip;
     try {
-      wssb.clients.forEach(function (client) {
+      wsjsb.clients.forEach(function (client) {
         client.send(JSON.stringify(jsonObj));
       });
-      console.log('A message ' + message.replace(/\s+/g, ' ') + ' forwarded to ' + wssb.clients.length + ' clients!');
+      console.log('A message ' + message.replace(/\s+/g, ' ') + ' forwarded to ' + wsjsb.clients.length + ' clients!');
+    } catch (e) {
+      console.error(e);
+    }
+  });
+});
+
+// port 10070: websockets for python on pi, binary
+
+wsbsp.on('connection', function (pi) {
+  pi.on('message', function (message) {
+    try {
+      wsbsb.clients.forEach(function (client) {
+        client.send(message);
+      });
+      console.log('A binary ' + message.replace(/\s+/g, ' ') + ' forwarded to ' + wsbsb.clients.length + ' clients!');
     } catch (e) {
       console.error(e);
     }

@@ -4,7 +4,7 @@ from communication import WsReceiver
 from ultrasonic import Ultrasonic
 from qr import QR
 import RPi.GPIO as GPIO
-from pservo import PServo
+from pservo import Turning
 from switch import Switch
 
 # pin connections (refer to http://goo.gl/a9SVCb please)
@@ -40,7 +40,7 @@ GPIO.setmode(GPIO.BCM) # set GPIO pin numbering
 usss = []
 
 # PWM Servo
-pservo = PServo(14)
+turning = Turning(14)
 
 # Switch for DC motor
 switch = Switch(26)
@@ -49,7 +49,7 @@ switch = Switch(26)
 qr = QR(switch)
 
 # Communication service
-comm = WsReceiver(usss, qr, pservo, switch)
+comm = WsReceiver(usss, qr, turning, switch)
 
 # Start all threads
 

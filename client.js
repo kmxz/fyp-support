@@ -91,6 +91,9 @@ window.onload = function () {
     alert('WebSockets connection is closed.');
   };
 
+  var wsb = new WebSocket('ws://' + REMOTE_HOST + ':10060/');
+  // TODO
+
   var refresh = function () {
     var time = new Date().getTime() / 1000;
     if (lastHeartBeat) {
@@ -143,8 +146,8 @@ window.onload = function () {
     }));
   };
 
-  window.servo = function (fl) {
-   send('servo', fl);
+  window.turn = function (fl) {
+   send('turning', fl);
   };
 
   var sr = document.getElementById('servo-range');
