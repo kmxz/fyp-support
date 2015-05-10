@@ -13,6 +13,11 @@ def buffered_to_data(thread):
     thread.lock.release()
     return out
 
+def start_img_ws():
+    ws = websocket.WebSocketApp(REMOTE_IMG)
+    ws.run_forever()
+    return ws
+
 class WsReceiver(threading.Thread):
 
     def __init__(self, usss, qr, pservo, switch):
@@ -54,7 +59,7 @@ class WsSender(threading.Thread):
         while True:
             last_time = time.time()
             try:
-                post_data = {'time': time.time(), 'ultrasonic': map(buffered_to_data, self.usss), 'qr': buffered_to_data(self.qr), 'image': buffered_to_data(self.qr.camera)}
+                post_data = {'time': time.time(), 'ultrasonic': map(buffered_to_data, self.usss), 'qr': buffered_to_data(self.qr)}
                 self.ws_receiver.ws.send(json.dumps(post_data))
                 print "Sending a message..."
             except:

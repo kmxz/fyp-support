@@ -3,7 +3,7 @@ import threading
 import time
 import uuid
 import os
-import urllib
+from communication import start_img_ws
 
 class Camera(threading.Thread):
 
@@ -12,6 +12,7 @@ class Camera(threading.Thread):
         super(Camera, self).__init__()
         self.sender = None
         self.fn = None
+        self.ws = start_img_ws()
         self.lock = threading.Lock()
 
     def run(self):
