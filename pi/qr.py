@@ -3,6 +3,7 @@ import threading
 import time
 import uuid
 import os
+import picamera
 from communication import CameraComm
 
 class Camera(threading.Thread):
@@ -14,6 +15,9 @@ class Camera(threading.Thread):
         self.fn = None
         self.comm = CameraComm()
         self.lock = threading.Lock()
+        self.camera = picamera.PiCamera()
+        self.camera.iso = 800
+        self.camera.framerate = 4
         self.time = time.time()
         self.c = 0
 
@@ -24,7 +28,8 @@ class Camera(threading.Thread):
             self.c = self.c + 1
             print "[CAMERA SINCE ", self.c , "]" , (time.time() - self.time)
             fn = str(uuid.uuid4()) + '.png'
-            subprocess.call(['raspistill -n -t 1 -w 256 -h 256 -o ' + fn],shell=True,cwd='/tmp')
+            #subprocess.call(['raspistill -n -t 1 -w 128 -h 256 -o ' + fn],shell=True,cwd='/tmp')
+            self.camera.capture('/tmp/' + fn)
 
             self.lock.acquire()
             self.fn = fn
