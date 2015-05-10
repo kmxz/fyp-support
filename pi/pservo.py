@@ -26,11 +26,11 @@ class Turning:
         print "[Servo in [0, 1] scale]", rv, " ", rrv
         return rrv
 
-    def turn_to(self, target):
+    def fast_turn_to(self, target):
         self.status = target
         servo.set_servo(self.gpio, int(round(self.transform(target) * 2000)))
 
-    def slow_turn_to(self, target):
+    def turn_to(self, target):
         if self.status > target:
             while self.status > target:
                 self.turn_to(self.status - 0.02)
@@ -70,19 +70,19 @@ class Turner(threading.Thread):
         self.turning.turner = None
 
     def center_to_left(self):
-        self.turning.turn_to(-0.8)
-        sleep(0.3)
+        self.turning.turn_to(-0.7)
+        sleep(0.2)
         self.turning.turn_to(-0.3)
 
     def center_to_right(self):
-        self.turning.turn_to(1)
-        sleep(0.3)
+        self.turning.turn_to(0.7)
+        sleep(0.2)
         self.turning.turn_to(0.3)
 
     def left_to_center(self):
         self.turning.turn_to(-0.45)
         sleep(0.3)
-        self.turning.turn_to(0.5)
+        self.turning.turn_to(0.45)
         sleep(0.4)
         self.turning.turn_to(0)
 
