@@ -17,7 +17,6 @@ class Turning:
         self.queue = Queue()
         self.turner = None
         self.gpio = gpio
-        self.status = 0
 
     def transform(self, dir): # dir from -1 to 1
         rv = dir * 0.29 + BIAS
@@ -27,18 +26,7 @@ class Turning:
         return rrv
 
     def turn_to(self, target):
-        self.status = target
         servo.set_servo(self.gpio, int(round(self.transform(target) * 2000)))
-
-    def slow_turn_to(self, target):
-        if self.status > target:
-            while self.status > target:
-                self.fast_turn_to(self.status - 0.01)
-                sleep(0.06)
-        else:
-            while self.status < target:
-                self.fast_turn_to(self.status + 0.01)
-                sleep(0.06)
 
     def add_task(self, task):
         print "[Turning task]", task
@@ -58,16 +46,10 @@ class Turner(threading.Thread):
     def run(self):
         while not self.turning.queue.empty():
             new_status = self.turning.queue.get()
-            status = self.turning.status
-            if (new_status == 0) and (status > 0):
-                self.right_to_center()
-            elif (new_status == 0) and (status < 0):
-                self.left_to_center()
-            elif (status == 0) and (new_status > 0):
-                self.center_to_right()
-            elif (status == 0) and (new_status < 0):
-                self.center_to_left()
+            getattr(self, new_status)()
+        self.turning.lock.acquire()
         self.turning.turner = None
+        self.turning.lock.release()
 
     def center_to_left(self):
         self.turning.turn_to(-0.7)
