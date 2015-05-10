@@ -16,21 +16,21 @@ class Camera(threading.Thread):
         self.lock = threading.Lock()
 
     def run(self):
-
         self.comm.start()
 
         while True:
 
             fn = str(uuid.uuid4()) + '.png'
-
             subprocess.call(['raspistill -n -t 1 -w 256 -h 256 -o ' + fn],shell=True,cwd='/tmp')
 
             self.lock.acquire()
             self.fn = fn
             self.lock.release()
 
-            if (self.comm is not None):
+            try:
                 self.comm.ws.send(open('/tmp/' + fn, 'rb').read())
+            except:
+                pass
 
 class QR(threading.Thread):
 
