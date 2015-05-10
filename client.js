@@ -53,7 +53,7 @@ window.onload = function () {
   // let us open a web socket
   var ws = new WebSocket('ws://' + REMOTE_HOST + ':10010/');
   ws.onmessage = function (evt) {
-    var msg = JSON.parse(evt.data);border-color: #F00;
+    var msg = JSON.parse(evt.data);
     lastHeartBeat = msg.time;
     text(ipSpan, msg.ip);
     msg.ultrasonic.forEach(function (sonic, index) {

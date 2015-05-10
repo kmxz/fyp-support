@@ -16,6 +16,8 @@ var currentPi, ip;
 
 var wssb = new ws.Server({ port: 10010 });
 var wssp = new ws.Server({ port: 10030 });
+var wsbsb = new ws.Server({ port: 10060 });
+var wsbsp = new ws.Server({ port: 10070 });
 
 // port 10010: websockets for browsers - allow users to subscribe
 
@@ -48,3 +50,5 @@ wssp.on('connection', function (pi) {
     }
   });
 });
+
+console.log('10000, 10010, 10030, 10060 and 10070 port started.');

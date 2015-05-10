@@ -4,6 +4,7 @@ import threading
 import websocket
 
 REMOTE = 'ws://pc.kmxz.net:10030/'
+REMOTE_IMG = 'ws://pc.kmxz.net:10070/'
 
 def buffered_to_data(thread):
     thread.lock.acquire()
@@ -28,10 +29,8 @@ class WsReceiver(threading.Thread):
         print "Get message ", message
         loaded = json.loads(message)
         if (loaded[u'type'] == u'servo'):
-            print 'Servo to ', loaded[u'value']
             self.pservo.turn_to(loaded[u'value'])
         elif (loaded[u'type'] == u'switch'):
-            print 'Switch to ', loaded[u'value']
             self.switch.set_to(loaded[u'value'])
 
     def on_open(self):

@@ -10,7 +10,7 @@ class Camera(threading.Thread):
     def __init__(self):
 
         super(Camera, self).__init__()
-        self.buf = []
+        self.sender = None
         self.fn = None
         self.lock = threading.Lock()
 
@@ -24,9 +24,10 @@ class Camera(threading.Thread):
 
             self.lock.acquire()
             self.fn = fn
-            encoded = urllib.quote(open('/tmp/' + fn, 'rb').read().encode('base64'))
-            self.buf.append('data:image/png;base64,' + encoded)
             self.lock.release()
+
+            if (self.ws is not None):
+                self.ws.send(open('/tmp/' + fn, 'rb').read())
 
 class QR(threading.Thread):
 
