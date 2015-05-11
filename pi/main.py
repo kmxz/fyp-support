@@ -6,6 +6,8 @@ from qr import QR, Program
 import RPi.GPIO as GPIO
 from pservo import Turning
 from switch import Switch
+from time import sleep
+import sys
 
 # pin connections (refer to http://goo.gl/a9SVCb please)
 # 1-, 2-, 3- stands for ultrasonic sensors
@@ -32,6 +34,12 @@ from switch import Switch
 # B-PITCH-$[35][36]$-M-SIG
 #   B-YAW-$[37][38]
 #   B-GND-$[39][40]
+
+if len(sys.argv) >= 2 and ("-n" in sys.argv[1]):
+    pass
+else:
+    print "Run with -n to remove 10 sec delay before start!"
+    sleep(10)
 
 GPIO.setmode(GPIO.BCM) # set GPIO pin numbering
 
