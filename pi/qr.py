@@ -3,7 +3,7 @@ import threading
 import time
 import uuid
 import os
-import picamera
+import signal
 from communication import CameraComm
 
 class Camera(threading.Thread):
@@ -11,29 +11,32 @@ class Camera(threading.Thread):
     def __init__(self):
 
         super(Camera, self).__init__()
+
         self.sender = None
-        self.fn = None
         self.comm = CameraComm()
-        self.lock = threading.Lock()
-        self.camera = picamera.PiCamera()
-        self.camera.iso = 800
-        self.camera.framerate = 4
-        self.time = time.time()
+        self.fastcamd = None
         self.c = 0
+        self.prefix = None
+
+        os.system('pkill raspifastcamd')
+
+        self.time = time.time()
+
+    def get_fn(self, c):
+        return self.prefix + '_' + str(c) + '.png'
 
     def run(self):
+
         self.comm.start()
+        self.prefix = str(uuid.uuid4())
+        self.fastcamd = subprocess.Popen(['raspifastcamd', '-w', '256', '-h', '256', '-o', self.prefix + '_%d.png'], cwd='/tmp')
 
         while True:
+            self.fastcamd.send_signal(signal.SIGUSR1)
             self.c = self.c + 1
-            print "[CAMERA SINCE ", self.c , "]" , (time.time() - self.time)
-            fn = str(uuid.uuid4()) + '.png'
-            #subprocess.call(['raspistill -n -t 1 -w 128 -h 256 -o ' + fn],shell=True,cwd='/tmp')
-            self.camera.capture('/tmp/' + fn)
 
-            self.lock.acquire()
-            self.fn = fn
-            self.lock.release()
+            time.sleep(0.2)
+            print "[CAMERA SINCE ", self.c , "]" , (time.time() - self.time)
 
             #try:
             #    self.comm.send('/tmp/' + fn)
@@ -48,6 +51,7 @@ class QR(threading.Thread):
         self.lock = threading.Lock()
         self.buf = []
         self.switch = switch
+        self.last_c = -1
         self.camera = Camera()
         self.camera.start()
 
@@ -59,13 +63,25 @@ class QR(threading.Thread):
 
         while True:
             print "[BARCODE]"
-            self.camera.lock.acquire()
-            fn = self.camera.fn
-            self.camera.fn = None
-            self.camera.lock.release()
+
+            try_c = self.camera.c
+
+            if try_c <= self.last_c:
+                time.sleep(0.2)
+                continue
+
+            fn = None
+
+            while try_c >= 0:
+                try_c = try_c - 1
+                tmp_name = self.camera.get_fn(try_c)
+                if os.path.isfile('/tmp/' + tmp_name):
+                    fn = tmp_name
+                    break
 
             if fn is None:
-                time.sleep(0.5)
+                print "No picture available yet"
+                time.sleep(0.2)
                 continue
 
             process = subprocess.Popen(['zbarimg -D ' + fn], stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, cwd='/tmp')

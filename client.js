@@ -164,10 +164,6 @@ window.onload = function () {
     }));
   };
 
-  window.turn = function (fl) {
-   send('turning', fl);
-  };
-
   window.servo = function (fl) {
    send('servo', fl);
   };
@@ -179,6 +175,12 @@ window.onload = function () {
   });
   mc.addEventListener('click', function () {
     send('switch', mc.checked);
+  });
+  Array.prototype.slice.call(document.getElementsByClassName('servo-action')).forEach(function (sa) {
+    var ac = sa.getAttribute('name');
+    sa.addEventListener('click', function () {
+      send('turning', ac);
+    });
   });
 
 };
