@@ -39,6 +39,9 @@ window.onload = function () {
     var msg = JSON.parse(evt.data);
     lastHeartBeat = msg.time;
     text(ipSpan, msg.ip);
+    if (msg.program.length) {
+      console.log(msg.program);
+    }
     msg.ultrasonic.forEach(function (sonic, index) {
       Array.prototype.push.apply(sonicPoints[index], sonic.map(function (point) {
         var element = document.createElement('div');

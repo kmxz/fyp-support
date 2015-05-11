@@ -37,21 +37,47 @@ class Camera(threading.Thread):
 
             self.c = self.c + 1
 
+class Program:
+
+    def __init__(self, switch, turning):
+
+        self.lock = threading.Lock()
+        self.buf = []
+        self.switch = switch
+        self.turning = turning
+        self.stage = 0
+
+    def on_barcode(self, content):
+
+        if ("1024" in content) and (self.stage == 0):
+            self.lock.acquire()
+            self.buf.append({'time': time.time(), 'content': "Command 1024"})
+            self.lock.release()
+            self.stage = 1
+            self.switch.set_to(False)
+            self.turning.add_task('center_to_left')
+            self.switch.set_to(True)
+
+        elif ("2048" in content) and (self.stage == 1):
+            self.lock.acquire()
+            self.buf.append({'time': time.time(), 'content': "Command 2048"})
+            self.lock.release()
+            self.stage = 2
+            self.switch.set_to(False)
+            self.turning.add_task('center_to_left')
+            self.switch.set_to(True)
+
 class QR(threading.Thread):
 
-    def __init__(self, switch):
+    def __init__(self, program):
 
         super(QR, self).__init__()
         self.lock = threading.Lock()
         self.buf = []
-        self.switch = switch
         self.last_c = -1
         self.camera = Camera()
         self.camera.start()
-
-    def on_barcode(self, content):
-
-        self.switch.set_to(False)
+        self.program = program
 
     def run(self):
 
@@ -78,10 +104,9 @@ class QR(threading.Thread):
             outlines = out.splitlines()
 
             self.lock.acquire()
-            print out, err
             for line in outlines:
                 if line.startswith('EAN-13:'):
                     self.buf.append({'time': time.time(), 'content': line[7:]})
-                    self.on_barcode(line[7:])
+                    self.program.on_barcode(line[7:])
             self.lock.release()
 

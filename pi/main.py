@@ -2,7 +2,7 @@
 
 from communication import WsReceiver
 from ultrasonic import Ultrasonic
-from qr import QR
+from qr import QR, Program
 import RPi.GPIO as GPIO
 from pservo import Turning
 from switch import Switch
@@ -45,11 +45,14 @@ turning = Turning(14)
 # Switch for DC motor
 switch = Switch(26)
 
+# program flow
+program = Program(switch, turning)
+
 # QR code scanne
-qr = QR(switch)
+qr = QR(switch, program)
 
 # Communication service
-comm = WsReceiver(usss, qr, turning, switch)
+comm = WsReceiver(usss, qr, turning, switch, program)
 
 # Start all threads
 

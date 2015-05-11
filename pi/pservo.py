@@ -55,11 +55,13 @@ class Turner(threading.Thread):
         self.turning.turn_to(-0.7)
         sleep(0.35)
         self.turning.turn_to(-0.3)
+        sleep(1.5)
 
     def center_to_right(self):
         self.turning.turn_to(0.7)
         sleep(0.35)
         self.turning.turn_to(0.3)
+        sleep(1.5)
 
     def left_to_center(self):
         self.turning.turn_to(-0.45)
@@ -67,6 +69,7 @@ class Turner(threading.Thread):
         self.turning.turn_to(0.55)
         sleep(0.3)
         self.turning.turn_to(0)
+        sleep(1.5)
 
     def right_to_center(self):
         self.turning.turn_to(0.45)
@@ -74,3 +77,4 @@ class Turner(threading.Thread):
         self.turning.turn_to(-0.4)
         sleep(0.3)
         self.turning.turn_to(0)
+        sleep(1.5)

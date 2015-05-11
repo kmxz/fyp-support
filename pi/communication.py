@@ -15,12 +15,12 @@ def buffered_to_data(thread):
 
 class WsReceiver(threading.Thread):
 
-    def __init__(self, usss, qr, turning, switch):
+    def __init__(self, usss, qr, turning, switch, program):
         super(WsReceiver, self).__init__()
         self.ws = websocket.WebSocketApp(REMOTE,
             on_message = self.on_message
         )
-        self.ws_sender = WsSender(self, usss, qr)
+        self.ws_sender = WsSender(self, usss, qr, program)
         self.turning = turning
         self.switch = switch
         self.ws.on_open = self.on_open
@@ -46,17 +46,18 @@ class WsReceiver(threading.Thread):
 
 class WsSender(threading.Thread):
 
-    def __init__(self, ws_receiver, usss, qr):
+    def __init__(self, ws_receiver, usss, qr, program):
         super(WsSender, self).__init__()
         self.ws_receiver = ws_receiver
         self.usss = usss
         self.qr = qr
+        self.program = program
 
     def run(self):
         while True:
             last_time = time.time()
             try:
-                post_data = {'time': time.time(), 'ultrasonic': map(buffered_to_data, self.usss), 'qr': buffered_to_data(self.qr)}
+                post_data = {'time': time.time(), 'ultrasonic': map(buffered_to_data, self.usss), 'qr': buffered_to_data(self.qr), 'program': buffered_to_data(self.program)}
                 self.ws_receiver.ws.send(json.dumps(post_data))
                 print "Sending a message..."
             except:
