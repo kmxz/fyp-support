@@ -23,7 +23,7 @@ class Camera(threading.Thread):
     def run(self):
 
         self.prefix = str(uuid.uuid4())
-        self.fastcamd = subprocess.Popen(['raspifastcamd', '-w', '128', '-h', '256', '-o', self.prefix + '_%d.jpg'], cwd='/tmp')
+        self.fastcamd = subprocess.Popen(['raspifastcamd -w 128 -h 256 -o ' + self.prefix + '_%d.jpg'], cwd='/tmp')
 
         time.sleep(0.5) # this is really hacky
 
@@ -72,14 +72,14 @@ class QR(threading.Thread):
             fn = self.camera.get_fn(self.camera.c)
             self.last_c = self.camera.c
 
-            process = subprocess.Popen(['zbarimg', '-Sdis', '-Sean13.en', '-D', fn], stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, cwd='/tmp')
+            process = subprocess.Popen(['zbarimg -Sdis -Sean13.en -D '+ fn], stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, cwd='/tmp')
             (out, err) = process.communicate()
 
             outlines = out.splitlines()
 
             self.lock.acquire()
+            print out, err
             for line in outlines:
-                print line
                 if line.startswith('EAN-13:'):
                     self.buf.append({'time': time.time(), 'content': line[7:]})
                     self.on_barcode(line[7:])
