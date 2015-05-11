@@ -15,14 +15,13 @@ class Camera(threading.Thread):
         self.sender = None
         self.comm = CameraComm()
         self.fastcamd = None
-        self.c = 0
+        self.c = -1
         self.prefix = None
-
-        os.system('pkill raspifastcamd')
 
         self.time = time.time()
 
     def get_fn(self, c):
+
         return self.prefix + '_' + str(c) + '.png'
 
     def run(self):
@@ -31,15 +30,22 @@ class Camera(threading.Thread):
         self.prefix = str(uuid.uuid4())
         self.fastcamd = subprocess.Popen(['raspifastcamd', '-w', '256', '-h', '256', '-o', self.prefix + '_%d.png'], cwd='/tmp')
 
+        time.sleep(1) # this is really hacky
+
         while True:
             self.fastcamd.send_signal(signal.SIGUSR1)
+
+            tmp_fn = '/tmp/' + self.get_fn(self.c + 1)
+
+            while not os.path.isfile(tmp_fn):
+                time.sleep(0.1)
+
             self.c = self.c + 1
 
-            time.sleep(0.2)
             print "[CAMERA SINCE ", self.c , "]" , (time.time() - self.time)
 
             #try:
-            #    self.comm.send('/tmp/' + fn)
+            self.comm.send(tmp_fn)
             #except:
             #    pass
 
@@ -64,25 +70,17 @@ class QR(threading.Thread):
         while True:
             print "[BARCODE]"
 
-            try_c = self.camera.c
-
-            if try_c <= self.last_c:
+            if self.camera.c <= self.last_c:
+                time.sleep(0.2)
+                print "[QR] Old picture..."
+                continue
+            elif self.camera.c < 0:
+                print "[QR] No picture available yet..."
                 time.sleep(0.2)
                 continue
 
-            fn = None
-
-            while try_c >= 0:
-                try_c = try_c - 1
-                tmp_name = self.camera.get_fn(try_c)
-                if os.path.isfile('/tmp/' + tmp_name):
-                    fn = tmp_name
-                    break
-
-            if fn is None:
-                print "No picture available yet"
-                time.sleep(0.2)
-                continue
+            fn = self.camera.get_fn(self.camera.c)
+            self.last_c = self.camera.c
 
             process = subprocess.Popen(['zbarimg -D ' + fn], stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, cwd='/tmp')
             (out, err) = process.communicate()

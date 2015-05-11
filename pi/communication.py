@@ -20,7 +20,9 @@ class CameraComm(threading.Thread):
         self.ws = websocket.WebSocketApp(REMOTE_IMG)
 
     def send(self, fn):
+        print "SENDING..."
         self.ws.send(open(fn, 'rb').read().encode("base64"))
+        print fn, (open(fn, 'rb').read()), "wtf"
 
     def run(self):
         while True: # loop to make sure the websocket reconnects once broken
