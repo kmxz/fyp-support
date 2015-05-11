@@ -23,7 +23,7 @@ class Camera(threading.Thread):
     def run(self):
 
         self.prefix = str(uuid.uuid4())
-        self.fastcamd = subprocess.Popen(['raspifastcamd -w 128 -h 256 -o ' + self.prefix + '_%d.jpg'], cwd='/tmp')
+        self.fastcamd = subprocess.Popen(['raspifastcamd', '-w' , '128', '-h', '256', '-o', self.prefix + '_%d.jpg'], cwd='/tmp')
 
         time.sleep(0.5) # this is really hacky
 
