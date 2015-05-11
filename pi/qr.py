@@ -79,6 +79,7 @@ class QR(threading.Thread):
 
             self.lock.acquire()
             for line in outlines:
+                print line
                 if line.startswith('EAN-13:'):
                     self.buf.append({'time': time.time(), 'content': line[7:]})
                     self.on_barcode(line[7:])
