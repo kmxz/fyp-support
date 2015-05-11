@@ -16,8 +16,6 @@ var currentPi, ip;
 
 var wsjsb = new ws.Server({ port: 10010 });
 var wsjsp = new ws.Server({ port: 10030 });
-var wsbsb = new ws.Server({ port: 10060 });
-var wsbsp = new ws.Server({ port: 10070 });
 
 // port 10010: websockets for browsers, json
 
@@ -51,19 +49,4 @@ wsjsp.on('connection', function (pi) {
   });
 });
 
-// port 10070: websockets for python on pi, binary
-
-wsbsp.on('connection', function (pi) {
-  pi.on('message', function (message) {
-    try {
-      wsbsb.clients.forEach(function (client) {
-        client.send(message);
-      });
-      console.log('A binary forwarded to ' + wsbsb.clients.length + ' clients!');
-    } catch (e) {
-      console.error(e);
-    }
-  });
-});
-
-console.log('10000, 10010, 10030, 10060 and 10070 port started.');
+console.log('10000, 10010, 10030 port started.');

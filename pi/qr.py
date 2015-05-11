@@ -4,7 +4,6 @@ import time
 import uuid
 import os
 import signal
-from communication import CameraComm
 
 class Camera(threading.Thread):
 
@@ -13,7 +12,6 @@ class Camera(threading.Thread):
         super(Camera, self).__init__()
 
         self.sender = None
-        self.comm = CameraComm()
         self.fastcamd = None
         self.c = -1
         self.prefix = None
@@ -43,11 +41,6 @@ class Camera(threading.Thread):
             self.c = self.c + 1
 
             print "[CAMERA SINCE ", self.c , "]" , (time.time() - self.time)
-
-            #try:
-            self.comm.send(tmp_fn)
-            #except:
-            #    pass
 
 class QR(threading.Thread):
 

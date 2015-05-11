@@ -13,22 +13,6 @@ def buffered_to_data(thread):
     thread.lock.release()
     return out
 
-class CameraComm(threading.Thread):
-
-    def __init__(self):
-        super(CameraComm, self).__init__()
-        self.ws = websocket.WebSocketApp(REMOTE_IMG)
-
-    def send(self, fn):
-        print "SENDING..."
-        self.ws.send(open(fn, 'rb').read().encode("base64"))
-        print fn, (open(fn, 'rb').read()), "wtf"
-
-    def run(self):
-        while True: # loop to make sure the websocket reconnects once broken
-            self.ws.run_forever()
-            time.sleep(0.1) # 100 ms delay between retries
-
 class WsReceiver(threading.Thread):
 
     def __init__(self, usss, qr, turning, switch):
